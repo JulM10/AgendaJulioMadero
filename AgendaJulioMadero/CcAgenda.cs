@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data.OleDb;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -93,6 +94,40 @@ namespace AgendaJulioMadero
             catch (Exception ex)
             {
                 MessageBox.Show($"Error al cargar datos: {ex.Message}");
+            }
+        }
+        public void AgregarContacto(string Nombre, string Apellido, int Telefono, string Mail, int Categoria)
+        {
+            // String queryInsertar
+            string queryInsertar = "INSERT INTO Contactos ([Nombre], [Apellido], [Telefono], [Mail], [IdCategoria]) VALUES (?, ?, ?, ?, ?)";
+            try
+            {
+                using (OleDbConnection conexion = new OleDbConnection(cadenaConexion))
+                {
+                    conexion.Open();
+                    using (OleDbCommand comandoInsertar = new OleDbCommand(queryInsertar, conexion))
+                    {
+                        comandoInsertar.Parameters.AddWithValue("?", Nombre);
+                        comandoInsertar.Parameters.AddWithValue("?", Apellido);
+                        comandoInsertar.Parameters.AddWithValue("?", Telefono);
+                        comandoInsertar.Parameters.AddWithValue("?", Mail);
+                        comandoInsertar.Parameters.AddWithValue("?", Categoria);
+
+                        // Ejecuta el comando
+                        int resultado = comandoInsertar.ExecuteNonQuery();
+
+
+                        // Si el registro fue exitoso, mostrar un mensaje y retornar true
+                        if (resultado > 0)
+                        {
+                            MessageBox.Show("Registro con éxito.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al registrar usuario: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }
