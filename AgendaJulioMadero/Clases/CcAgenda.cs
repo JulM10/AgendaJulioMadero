@@ -27,7 +27,7 @@ namespace AgendaJulioMadero
                 {
                     conexion.Open();
                     // Consulta para obtener los contactos junto con sus categorías
-                    string query = "SELECT c.Nombre, c.Apellido, c.Mail, c.Telefono, c.IdCategoria, cat.Descripcion AS Categoria FROM Contactos c INNER JOIN Categoria cat ON c.IdCategoria = cat.Id";
+                    string query = "SELECT c.Id, c.Nombre, c.Apellido, c.Mail, c.Telefono, c.IdCategoria, cat.Descripcion AS Categoria FROM Contactos c INNER JOIN Categoria cat ON c.IdCategoria = cat.Id";
 
                     using (OleDbCommand comando = new OleDbCommand(query, conexion))
                     {
@@ -37,11 +37,13 @@ namespace AgendaJulioMadero
                             treeView.Nodes.Clear();
                             while (reader.Read())
                             {
+                                int id = Convert.ToInt32(reader["Id"]);
                                 string categoria = reader["Categoria"].ToString();
                                 string nombre = reader["Nombre"].ToString();
                                 string apellido = reader["Apellido"].ToString();
                                 string correo = reader["Mail"].ToString();
-                                string telefono = reader["Telefono"].ToString();
+                                int telefono = int.TryParse(reader["Telefono"].ToString(), out int tel) ? tel : 0;
+                                int idCategoria = Convert.ToInt32(reader["IdCategoria"]);
 
                                 // Busca el nodo de la categoría
                                 TreeNode categoriaNode = treeView.Nodes.Cast<TreeNode>().FirstOrDefault(n => n.Text == categoria);
@@ -57,16 +59,12 @@ namespace AgendaJulioMadero
                                 TreeNode contactoNode = new TreeNode($"{nombre} {apellido}");
                                 categoriaNode.Nodes.Add(contactoNode);
 
-                                // Maneja IdCategoria correctamente
-                                if (reader["IdCategoria"] != DBNull.Value) // Verifica si el valor no es nulo
-                                {
-                                    int idCategoria = Convert.ToInt32(reader["IdCategoria"]); // Convierte directamente
-
                                     TreeNodeInfo contactoInfo = new TreeNodeInfo
                                     {
+                                        Id = id,
                                         Nombre = nombre,
                                         Apellido = apellido,
-                                        Telefono = int.TryParse(telefono, out int tel) ? tel : 0, // Convierte a int
+                                        Telefono = telefono,
                                         Mail = correo,
                                         IdCategoria = idCategoria
                                     };
@@ -81,11 +79,6 @@ namespace AgendaJulioMadero
                                     // Agregar texto descriptivo al nodo de detalles
                                     infoNode.Nodes.Add($"Teléfono: {telefono}");
                                     infoNode.Nodes.Add($"Correo: {correo}");
-                                }
-                                else
-                                {
-                                    MessageBox.Show("IdCategoria es nulo para uno de los contactos.");
-                                }
                             }
                         }
                     }
@@ -98,14 +91,14 @@ namespace AgendaJulioMadero
         }
         public void AgregarContacto(string Nombre, string Apellido, int Telefono, string Mail, int Categoria)
         {
-            // String queryInsertar
-            string queryInsertar = "INSERT INTO Contactos ([Nombre], [Apellido], [Telefono], [Mail], [IdCategoria]) VALUES (?, ?, ?, ?, ?)";
+            // String query para agregar contactos
+            string query = "INSERT INTO Contactos ([Nombre], [Apellido], [Telefono], [Mail], [IdCategoria]) VALUES (?, ?, ?, ?, ?)";
             try
             {
                 using (OleDbConnection conexion = new OleDbConnection(cadenaConexion))
                 {
                     conexion.Open();
-                    using (OleDbCommand comandoInsertar = new OleDbCommand(queryInsertar, conexion))
+                    using (OleDbCommand comandoInsertar = new OleDbCommand(query, conexion))
                     {
                         comandoInsertar.Parameters.AddWithValue("?", Nombre);
                         comandoInsertar.Parameters.AddWithValue("?", Apellido);
@@ -128,6 +121,39 @@ namespace AgendaJulioMadero
             catch (Exception ex)
             {
                 MessageBox.Show("Error al registrar usuario: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        public void EliminarContacto(int Id)
+        {
+            // String query para agregar contactos
+            string query = "DELETE FROM CONTACTOS WHERE id = ?";
+
+            try
+            {
+                using (OleDbConnection conexion = new OleDbConnection(cadenaConexion))
+                {
+                    conexion.Open();
+                    using (OleDbCommand comandoInsertar = new OleDbCommand(query, conexion))
+                    {
+                        comandoInsertar.Parameters.AddWithValue("?", Id);
+
+                        // Ejecuta el comando
+                        int resultado = comandoInsertar.ExecuteNonQuery();
+
+
+                        // Si el registro fue exitoso, mostrar un mensaje y retornar true
+                        if (resultado > 0)
+                        {
+                            MessageBox.Show("Contacto eliminado con exito.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al Eliminar Usuario: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

@@ -37,11 +37,11 @@ namespace AgendaJulioMadero
                 // Cargar los datos en los TextBox
                 txtNombre.Text = contactoInfo.Nombre;
                 txtApellido.Text = contactoInfo.Apellido;
-                TxtTelefono.Text = contactoInfo.Telefono.ToString(); // Convertir a string
+                TxtTelefono.Text = contactoInfo.Telefono.ToString();
                 TxtEmail.Text = contactoInfo.Mail;
 
                 // Cargar el ID de categoría en el ComboBox
-                CmbCategoria.SelectedValue = contactoInfo.IdCategoria; // Ajustado para usar el ID
+                CmbCategoria.SelectedValue = contactoInfo.IdCategoria;
             }
         }
 
@@ -52,10 +52,10 @@ namespace AgendaJulioMadero
                 string.IsNullOrWhiteSpace(txtApellido.Text) ||
                 string.IsNullOrWhiteSpace(TxtEmail.Text) ||
                 string.IsNullOrWhiteSpace(TxtTelefono.Text) ||
-                CmbCategoria.SelectedIndex == -1) // Verificar que se haya seleccionado una categoría
+                CmbCategoria.SelectedIndex == -1)
             {
                 MessageBox.Show("Por favor, completa todos los campos requeridos.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return; // Salir del método si hay campos vacíos
+                return;
             }
 
             // Obtener los valores de los campos
@@ -68,14 +68,49 @@ namespace AgendaJulioMadero
             // Validar que el teléfono sea un número entero
             if (!int.TryParse(TxtTelefono.Text, out telefono))
             {
-                MessageBox.Show("Por favor, ingresa un número de teléfono válido.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return; // Salir del método si el teléfono no es válido
+                MessageBox.Show("Por favor, ingresa un número de teléfono válido. Recurda solo usar numeros", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return; 
             }
 
-            // Crear una instancia de CcAgenda y llamar al método para agregar el contacto
+            // llama al método para agregar el contacto
             CcAgenda ccAgenda = new CcAgenda();
             ccAgenda.AgregarContacto(nombre, apellido, telefono, mail, idCategoria);
             ccAgenda.CargarTree(treeViewAgenda);
+        }
+
+        private void BtnEliminar_Click(object sender, EventArgs e)
+        {
+            CcAgenda ccAgenda = new CcAgenda();
+
+            // Verifica si hay un nodo seleccionado y si contiene la información del contacto
+            if (treeViewAgenda.SelectedNode?.Tag is TreeNodeInfo contactoInfo)
+            {
+                int id = contactoInfo.Id;
+
+                // Confirmar la eliminación
+                var confirmResult = MessageBox.Show("¿Está seguro de que desea eliminar este contacto?",
+                                                     "Confirmar eliminación",
+                                                     MessageBoxButtons.YesNo,
+                                                     MessageBoxIcon.Warning);
+
+                if (confirmResult == DialogResult.Yes)
+                {
+                    try
+                    {
+                        ccAgenda.EliminarContacto(id);
+                        ccAgenda.CargarTree(treeViewAgenda);
+                    }
+                    catch (Exception ex)
+                    {
+                        // Manejar cualquier error que ocurra durante la eliminación
+                        MessageBox.Show($"Error al eliminar el contacto: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show("Seleccione un contacto para eliminar.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
         }
     }
 }

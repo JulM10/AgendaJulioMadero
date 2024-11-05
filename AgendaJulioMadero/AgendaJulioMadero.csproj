@@ -46,10 +46,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CategoriaObjeto.cs" />
-    <Compile Include="CcAgenda.cs" />
-    <Compile Include="CcCategoria.cs" />
-    <Compile Include="TreenodeObjeto.cs" />
+    <Compile Include="Objetos\CategoriaObjeto.cs" />
+    <Compile Include="Clases\CcAgenda.cs" />
+    <Compile Include="Clases\CcCategoria.cs" />
+    <Compile Include="Objetos\TreenodeObjeto.cs" />
     <Compile Include="FrmAgenda.cs">
       <SubType>Form</SubType>
     </Compile>
