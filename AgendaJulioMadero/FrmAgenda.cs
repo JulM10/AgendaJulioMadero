@@ -174,5 +174,10 @@ namespace AgendaJulioMadero
                 MessageBox.Show("Seleccione un contacto para editar.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
+
+        private void BtnBuscar_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

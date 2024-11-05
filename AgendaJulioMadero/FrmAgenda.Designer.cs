@@ -168,6 +168,7 @@
             this.BtnBuscar.TabIndex = 19;
             this.BtnBuscar.Text = "Buscar";
             this.BtnBuscar.UseVisualStyleBackColor = true;
+            this.BtnBuscar.Click += new System.EventHandler(this.BtnBuscar_Click);
             // 
             // BtnExportar
             // 

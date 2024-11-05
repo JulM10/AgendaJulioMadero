@@ -157,8 +157,7 @@ namespace AgendaJulioMadero
 
         public void EditarContacto(int Id, string Nombre, string Apellido, string Mail, int Telefono, int IdCategoria)
         {
-            // String query para agregar contactos
-            string query = "UPDATE CONTACTOS SET Nombre = ?, Apellido = ?, Mail = ?, Telefono = ?, IdCategoria = ? WHERE Id =" + Id;
+            string query = "UPDATE Contactos SET Nombre = ?, Apellido = ?, Mail = ?, Telefono = ?, IdCategoria = ? WHERE Id = ?";
 
             try
             {
@@ -169,25 +168,41 @@ namespace AgendaJulioMadero
                     {
                         comandoEditar.Parameters.AddWithValue("?", Nombre);
                         comandoEditar.Parameters.AddWithValue("?", Apellido);
-                        comandoEditar.Parameters.AddWithValue("?", Telefono);
                         comandoEditar.Parameters.AddWithValue("?", Mail);
+                        comandoEditar.Parameters.AddWithValue("?", Telefono);
                         comandoEditar.Parameters.AddWithValue("?", IdCategoria);
+                        comandoEditar.Parameters.AddWithValue("?", Id);
 
-                        // Ejecuta el comando
+                        // Ejecutar el comando
                         int resultado = comandoEditar.ExecuteNonQuery();
 
-                        // Si el registro fue exitoso, mostrar un mensaje y retornar true
+                        // Si se actualizó el registro con éxito
                         if (resultado > 0)
                         {
-                            MessageBox.Show("Contacto Actualizado con exito.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            MessageBox.Show("Contacto actualizado con éxito.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                        else
+                        {
+                            MessageBox.Show("No se encontró el contacto para actualizar.", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
                     }
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error al Actualizar Usuario: " + Nombre + " " + Apellido  + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Error al actualizar usuario: " + Nombre + " " + Apellido + " " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+        public void BuscarPorNombre(string Nombre)
+        {
+
+        }
+        public void BuscarPorApellido(string Apellido)
+        {
+        
+        }
+        public void BuscarPorCategoria(int categoria)
+        {
         }
     }
 }
