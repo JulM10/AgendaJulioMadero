@@ -134,26 +134,59 @@ namespace AgendaJulioMadero
                 using (OleDbConnection conexion = new OleDbConnection(cadenaConexion))
                 {
                     conexion.Open();
-                    using (OleDbCommand comandoInsertar = new OleDbCommand(query, conexion))
+                    using (OleDbCommand comandoEliminar = new OleDbCommand(query, conexion))
                     {
-                        comandoInsertar.Parameters.AddWithValue("?", Id);
+                        comandoEliminar.Parameters.AddWithValue("?", Id);
 
                         // Ejecuta el comando
-                        int resultado = comandoInsertar.ExecuteNonQuery();
-
+                        int resultado = comandoEliminar.ExecuteNonQuery();
 
                         // Si el registro fue exitoso, mostrar un mensaje y retornar true
                         if (resultado > 0)
                         {
                             MessageBox.Show("Contacto eliminado con exito.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
-
                     }
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Error al Eliminar Usuario: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        public void EditarContacto(int Id, string Nombre, string Apellido, string Mail, int Telefono, int IdCategoria)
+        {
+            // String query para agregar contactos
+            string query = "UPDATE CONTACTOS SET Nombre = ?, Apellido = ?, Mail = ?, Telefono = ?, IdCategoria = ? WHERE Id =" + Id;
+
+            try
+            {
+                using (OleDbConnection conexion = new OleDbConnection(cadenaConexion))
+                {
+                    conexion.Open();
+                    using (OleDbCommand comandoEditar = new OleDbCommand(query, conexion))
+                    {
+                        comandoEditar.Parameters.AddWithValue("?", Nombre);
+                        comandoEditar.Parameters.AddWithValue("?", Apellido);
+                        comandoEditar.Parameters.AddWithValue("?", Telefono);
+                        comandoEditar.Parameters.AddWithValue("?", Mail);
+                        comandoEditar.Parameters.AddWithValue("?", IdCategoria);
+
+                        // Ejecuta el comando
+                        int resultado = comandoEditar.ExecuteNonQuery();
+
+                        // Si el registro fue exitoso, mostrar un mensaje y retornar true
+                        if (resultado > 0)
+                        {
+                            MessageBox.Show("Contacto Actualizado con exito.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al Actualizar Usuario: " + Nombre + " " + Apellido  + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

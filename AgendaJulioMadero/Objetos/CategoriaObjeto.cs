@@ -13,7 +13,7 @@ namespace AgendaJulioMadero
 
             public override string ToString()
             {
-                return Descripcion; // Esto asegura que el ComboBox muestre la Descripción
+                return Descripcion;
             }
         }
 }

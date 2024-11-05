@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.Common;
 using System.Data.OleDb;
 using System.Drawing;
 using System.Linq;
@@ -92,7 +93,6 @@ namespace AgendaJulioMadero
                                                      "Confirmar eliminación",
                                                      MessageBoxButtons.YesNo,
                                                      MessageBoxIcon.Warning);
-
                 if (confirmResult == DialogResult.Yes)
                 {
                     try
@@ -110,6 +110,68 @@ namespace AgendaJulioMadero
             else
             {
                 MessageBox.Show("Seleccione un contacto para eliminar.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+        private void BtnEditar_Click(object sender, EventArgs e)
+        {
+            CcAgenda ccAgenda = new CcAgenda();
+
+            // Verifica si hay un nodo seleccionado y si contiene la información del contacto
+            if (treeViewAgenda.SelectedNode?.Tag is TreeNodeInfo contactoInfo)
+            {
+
+                // Validar que todos los campos requeridos estén llenos
+                if (string.IsNullOrWhiteSpace(txtNombre.Text) ||
+                    string.IsNullOrWhiteSpace(txtApellido.Text) ||
+                    string.IsNullOrWhiteSpace(TxtEmail.Text) ||
+                    string.IsNullOrWhiteSpace(TxtTelefono.Text) ||
+                    CmbCategoria.SelectedIndex == -1)
+                {
+                    MessageBox.Show("Por favor, completa todos los campos requeridos.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+
+                int id = contactoInfo.Id; // Asegúrate de que esta propiedad exista en TreeNodeInfo
+                var confirmResult = MessageBox.Show("¿Está seguro de que desea editar este contacto?",
+                                                    "Confirmar Edición",
+                                                    MessageBoxButtons.YesNo,
+                                                    MessageBoxIcon.Warning);
+                if (confirmResult == DialogResult.Yes)
+                {
+                    try
+                    {
+                        // Obtener los valores de los campos
+                        string nombre = txtNombre.Text;
+                        string apellido = txtApellido.Text;
+                        int telefono;
+                        string mail = TxtEmail.Text;
+                        int idCategoria = (int)CmbCategoria.SelectedValue;
+
+                        // Validar que el teléfono sea un número entero
+                        if (!int.TryParse(TxtTelefono.Text, out telefono))
+                        {
+                            MessageBox.Show("Por favor, ingresa un número de teléfono válido. Recuerda solo usar números.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
+                        }
+
+                        // Llama al método para editar el contacto
+                        ccAgenda.EditarContacto(id, nombre, apellido, mail, telefono, idCategoria);
+
+                        // Cargar el TreeView nuevamente
+                        ccAgenda.CargarTree(treeViewAgenda);
+                    }
+                    catch (Exception ex)
+                    {
+                        // Manejar cualquier error que ocurra durante la edición
+                        MessageBox.Show($"Error al editar el contacto: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show("Seleccione un contacto para editar.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
     }
