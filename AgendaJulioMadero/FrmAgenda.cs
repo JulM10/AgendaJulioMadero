@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO;
 
 namespace AgendaJulioMadero
 {
@@ -29,6 +30,7 @@ namespace AgendaJulioMadero
             CcCategoria ccCategoria = new CcCategoria();
             ccCategoria.Llenarcmb(CmbCategoria);
             ccCategoria.Llenarcmb(CmbCategoriaBusquedad);
+            CmbCategoriaBusquedad.SelectedIndex = -1;
         }
         private void treeView_AfterSelect(object sender, TreeViewEventArgs e)
         {
@@ -133,7 +135,7 @@ namespace AgendaJulioMadero
                 }
 
 
-                int id = contactoInfo.Id; // Asegúrate de que esta propiedad exista en TreeNodeInfo
+                int id = contactoInfo.Id;
                 var confirmResult = MessageBox.Show("¿Está seguro de que desea editar este contacto?",
                                                     "Confirmar Edición",
                                                     MessageBoxButtons.YesNo,
@@ -177,7 +179,107 @@ namespace AgendaJulioMadero
 
         private void BtnBuscar_Click(object sender, EventArgs e)
         {
+            CcAgenda ccAgenda = new CcAgenda();
 
+            // Prioridad de búsqueda: primero Nombre, luego Email, y finalmente Categoría.
+            if (!string.IsNullOrWhiteSpace(TxtNombreBusquedad.Text))
+            {
+                treeViewAgenda.Nodes.Clear();
+                // Buscar por nombre 
+                ccAgenda.BuscarPorNombre(TxtNombreBusquedad.Text, treeViewAgenda);
+                TxtNombreBusquedad.Clear();
+            }
+            else if (!string.IsNullOrWhiteSpace(TxtEmailBusqueda.Text))
+            {
+                treeViewAgenda.Nodes.Clear();
+                // Busca por email 
+                ccAgenda.BuscarPorMail(TxtEmailBusqueda.Text, treeViewAgenda);
+                TxtEmailBusqueda.Clear();
+            }
+            else if (CmbCategoriaBusquedad.SelectedIndex >= 0)
+            {
+                treeViewAgenda.Nodes.Clear();
+                // Busca por categoria
+                ccAgenda.BuscarPorCategoria((int)CmbCategoriaBusquedad.SelectedValue, treeViewAgenda);
+                CmbCategoriaBusquedad.SelectedIndex = -1;
+            }
+            else
+            {
+                MessageBox.Show("Por favor, ingresa al menos un criterio de búsqueda.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
+            }
+        }
+
+        private void BtnReset_Click(object sender, EventArgs e)
+        {
+            CcAgenda ccAgenda = new CcAgenda();
+            ccAgenda.CargarTree(treeViewAgenda);
+        }
+
+        private void BtnExportarContacto_Click(object sender, EventArgs e)
+        {
+            if (treeViewAgenda.SelectedNode?.Tag is TreeNodeInfo contactoInfo)
+            {
+                // Crear un StringBuilder para construir el contenido CSV
+                StringBuilder sb = new StringBuilder();
+
+                // Agregar los encabezados del CSV
+                sb.AppendLine("Nombre,Apellido,Teléfono,Mail,Categoría");
+
+                // Agregar los valores del contacto
+                sb.AppendLine($"{contactoInfo.Nombre},{contactoInfo.Apellido},{contactoInfo.Telefono},{contactoInfo.Mail},{contactoInfo.IdCategoria}");
+
+                // Guardar el archivo CSV
+                SaveFileDialog saveFileDialog = new SaveFileDialog
+                {
+                    Filter = "CSV File|*.csv",
+                    Title = "Guardar contacto en CSV"
+                };
+
+                if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    File.WriteAllText(saveFileDialog.FileName, sb.ToString());
+                    MessageBox.Show("Contacto exportado con éxito a CSV.", "Exportación", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Por favor, selecciona un contacto en el TreeView.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        private void BtnExportar_Click(object sender, EventArgs e)
+        {
+            // Crear un StringBuilder para construir el contenido CSV
+            StringBuilder sb = new StringBuilder();
+
+            // Agregar los encabezados del CSV
+            sb.AppendLine("Nombre,Apellido,Teléfono,Mail,Categoría");
+
+            // Recorrer todos los nodos del TreeView (contactos)
+            foreach (TreeNode categoriaNode in treeViewAgenda.Nodes)
+            {
+                foreach (TreeNode contactoNode in categoriaNode.Nodes)
+                {
+                    if (contactoNode.Tag is TreeNodeInfo contactoInfo)
+                    {
+                        // Agregar los valores del contacto
+                        sb.AppendLine($"{contactoInfo.Nombre},{contactoInfo.Apellido},{contactoInfo.Telefono},{contactoInfo.Mail},{categoriaNode.Text}");
+                    }
+                }
+            }
+
+            // Guardar el archivo CSV
+            SaveFileDialog saveFileDialog = new SaveFileDialog
+            {
+                Filter = "CSV File|*.csv",
+                Title = "Guardar todos los contactos en CSV"
+            };
+
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                File.WriteAllText(saveFileDialog.FileName, sb.ToString());
+                MessageBox.Show("Lista de contactos exportada con éxito a CSV.", "Exportación", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
         }
     }
 }

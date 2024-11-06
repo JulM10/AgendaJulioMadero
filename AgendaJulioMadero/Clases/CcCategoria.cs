@@ -23,7 +23,7 @@ namespace AgendaJulioMadero
                 using (OleDbConnection conexion = new OleDbConnection(cadenaConexion))
                 {
                     conexion.Open();
-                    string query = "SELECT Id, Descripcion FROM Categoria"; // Asegúrate de que traes el Id
+                    string query = "SELECT Id, Descripcion FROM Categoria";
                     using (OleDbCommand comando = new OleDbCommand(query, conexion))
                     {
                         using (OleDbDataReader reader = comando.ExecuteReader())
@@ -33,8 +33,8 @@ namespace AgendaJulioMadero
                             DataTable dt = new DataTable();
                             dt.Load(reader);
                             cmb.DataSource = dt;
-                            cmb.DisplayMember = "Descripcion"; // El nombre que se mostrará en el ComboBox
-                            cmb.ValueMember = "Id"; // El valor que se almacenará
+                            cmb.DisplayMember = "Descripcion";
+                            cmb.ValueMember = "Id";
                         }
                     }
                 }

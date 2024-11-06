@@ -34,7 +34,7 @@
             this.BtnEditar = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.CmbCategoriaBusquedad = new System.Windows.Forms.ComboBox();
-            this.TxtEmailCategoria = new System.Windows.Forms.TextBox();
+            this.TxtEmailBusqueda = new System.Windows.Forms.TextBox();
             this.TxtNombreBusquedad = new System.Windows.Forms.TextBox();
             this.label8 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
@@ -53,6 +53,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.BtnExportarContacto = new System.Windows.Forms.Button();
+            this.BtnReset = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -97,8 +98,9 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.BtnReset);
             this.groupBox1.Controls.Add(this.CmbCategoriaBusquedad);
-            this.groupBox1.Controls.Add(this.TxtEmailCategoria);
+            this.groupBox1.Controls.Add(this.TxtEmailBusqueda);
             this.groupBox1.Controls.Add(this.TxtNombreBusquedad);
             this.groupBox1.Controls.Add(this.label8);
             this.groupBox1.Controls.Add(this.label7);
@@ -119,12 +121,12 @@
             this.CmbCategoriaBusquedad.Size = new System.Drawing.Size(101, 21);
             this.CmbCategoriaBusquedad.TabIndex = 25;
             // 
-            // TxtEmailCategoria
+            // TxtEmailBusqueda
             // 
-            this.TxtEmailCategoria.Location = new System.Drawing.Point(113, 44);
-            this.TxtEmailCategoria.Name = "TxtEmailCategoria";
-            this.TxtEmailCategoria.Size = new System.Drawing.Size(101, 20);
-            this.TxtEmailCategoria.TabIndex = 23;
+            this.TxtEmailBusqueda.Location = new System.Drawing.Point(113, 44);
+            this.TxtEmailBusqueda.Name = "TxtEmailBusqueda";
+            this.TxtEmailBusqueda.Size = new System.Drawing.Size(101, 20);
+            this.TxtEmailBusqueda.TabIndex = 23;
             // 
             // TxtNombreBusquedad
             // 
@@ -178,6 +180,7 @@
             this.BtnExportar.TabIndex = 19;
             this.BtnExportar.Text = "Exportar Lista de contactos";
             this.BtnExportar.UseVisualStyleBackColor = true;
+            this.BtnExportar.Click += new System.EventHandler(this.BtnExportar_Click);
             // 
             // groupBox2
             // 
@@ -287,6 +290,17 @@
             this.BtnExportarContacto.TabIndex = 21;
             this.BtnExportarContacto.Text = "Exportar contacto seleccionado";
             this.BtnExportarContacto.UseVisualStyleBackColor = true;
+            this.BtnExportarContacto.Click += new System.EventHandler(this.BtnExportarContacto_Click);
+            // 
+            // BtnReset
+            // 
+            this.BtnReset.Location = new System.Drawing.Point(218, 79);
+            this.BtnReset.Name = "BtnReset";
+            this.BtnReset.Size = new System.Drawing.Size(102, 42);
+            this.BtnReset.TabIndex = 26;
+            this.BtnReset.Text = "Resetear busqueda";
+            this.BtnReset.UseVisualStyleBackColor = true;
+            this.BtnReset.Click += new System.EventHandler(this.BtnReset_Click);
             // 
             // FrmAgenda
             // 
@@ -320,7 +334,7 @@
         private System.Windows.Forms.Button BtnEditar;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Button BtnBuscar;
-        private System.Windows.Forms.TextBox TxtEmailCategoria;
+        private System.Windows.Forms.TextBox TxtEmailBusqueda;
         private System.Windows.Forms.TextBox TxtNombreBusquedad;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label label7;
@@ -339,6 +353,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ComboBox CmbCategoriaBusquedad;
         private System.Windows.Forms.Button BtnExportarContacto;
+        private System.Windows.Forms.Button BtnReset;
     }
 }
 
